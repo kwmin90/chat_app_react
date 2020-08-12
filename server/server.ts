@@ -15,9 +15,8 @@ io.on("connection", (socket) => {
       users.push(user);
       socket.emit("message", `Welcome to Chat App ${user.username}`);
       socket.broadcast.emit("message", `${user.username} has joined the chat`);
-      io.emit("allUsers", {
-        users: users,
-      });
+      const allUsers = [...users.map((user) => user.username)];
+      io.emit("allUsers", allUsers);
     }
   });
 
