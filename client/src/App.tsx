@@ -8,14 +8,16 @@ const App: React.FC = () => {
   const socketRef: React.MutableRefObject<any> = useRef();
   const [messages, setMessages] = useState([""]);
   const [newMessage, setNewMessage] = useState("");
-  //const [users, setUsers] = useState([""]);
+  const [users, setUsers] = useState([""]);
 
   useEffect(() => {
+    const username = prompt("Enter a username", "John Doe");
     socketRef.current = socketIOClient(URI);
-    socketRef.current.emit("username", "username");
+
+    socketRef.current.emit("username", username);
 
     socketRef.current.on("allUsers", (allUsers: string[]) => {
-      //setUsers(allUsers);
+      setUsers(allUsers);
     });
 
     socketRef.current.on("message", (message: any) => {
@@ -30,6 +32,13 @@ const App: React.FC = () => {
   const sendMessage = (message: string) => {
     socketRef.current.emit("message", message);
   };
+  const submit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage(newMessage);
+      setNewMessage("");
+    }
+  };
   return (
     <div className="container">
       <div className="chat-header">
@@ -37,12 +46,10 @@ const App: React.FC = () => {
       </div>
       <div className="chat-main">
         <div className="chat-users">
-          <h6>Connected Users</h6>
-          {/* {users.map((user) => {
-            return <p>{user}</p>;
-          })} */}
-          <p>user1</p>
-          <p>user2</p>
+          <h5>Connected Users</h5>
+          {users.map((user, index) => {
+            return <h6 key={index}>{user}</h6>;
+          })}
         </div>
         <div className="chat-message">
           {messages.map((message, index) => {
@@ -56,13 +63,7 @@ const App: React.FC = () => {
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              sendMessage(newMessage);
-              setNewMessage("");
-            }
-          }}
+          onKeyDown={(e) => submit(e)}
         />
       </div>
     </div>
