@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import socketIOClient from "socket.io-client";
 import "./App.css";
 
-const URI = `localhost:${process.env.PORT}`;
+const URI = `https://chat-app-kwmin.herokuapp.com/`;
 
 const App: React.FC = () => {
   const socketRef: React.MutableRefObject<any> = useRef();
