@@ -3,7 +3,6 @@ import socketIOClient from "socket.io-client";
 import "./App.css";
 
 const URI =
-  "http://localhost:8080" ||
   "chat-app-kwmin.herokuapp.com:8080" ||
   `chat-app-kwmin.herokuapp.com:${process.env.PORT}`;
 
