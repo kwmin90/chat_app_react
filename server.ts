@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
 });
 
 if (ENV === 'production') {
-  app.use(express.static('../client/build'));
+  app.use(express.static('client/build'));
 }
 
 server.listen(PORT, () => {
