@@ -8,7 +8,6 @@ const server = http.createServer(app);
 const io = socketio(server);
 const users: User[] = [];
 const PORT = process.env.PORT || 8080;
-const ENV = "production";
 
 io.on("connection", (socket) => {
   socket.on("username", (username: string) => {
@@ -42,7 +41,7 @@ io.on("connection", (socket) => {
   });
 });
 
-if (ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
 }
 
