@@ -7,6 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 const users: User[] = [];
+const PORT = process.env.PORT || 8080;
 
 io.on("connection", (socket) => {
   socket.on("username", (username: string) => {
@@ -33,14 +34,17 @@ io.on("connection", (socket) => {
       const user = users.splice(index, 1)[0];
       if (user) {
         io.emit("message", `${user.username} has left the chat`);
-        io.emit("allUsers", {
-          users: users,
-        });
+        const allUsers = [...users.map((user) => user.username)];
+        io.emit("allUsers", allUsers);
       }
     }
   });
-});
+});console.log(process.env.NODE_ENV);
 
-server.listen(4200, () => {
-  console.log("express server listening to port 4200");
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
+}
+
+server.listen(PORT, () => {
+  console.log(`express server listening to port ${PORT}`);
 });

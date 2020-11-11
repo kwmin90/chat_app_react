@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import socketIOClient from "socket.io-client";
 import "./App.css";
 
-const URI = "http://localhost:4200";
+const URI = "http://localhost:8080";
 
 const App: React.FC = () => {
   const socketRef: React.MutableRefObject<any> = useRef();
   const [messages, setMessages] = useState([""]);
   const [newMessage, setNewMessage] = useState("");
   const [users, setUsers] = useState([""]);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     const username = prompt("Enter a username", "John Doe");
@@ -22,6 +23,7 @@ const App: React.FC = () => {
 
     socketRef.current.on("message", (message: any) => {
       setMessages((messages) => [...messages, message]);
+      scrollToRef(scrollRef);
     });
 
     return () => {
@@ -29,9 +31,14 @@ const App: React.FC = () => {
     };
   }, []);
 
+  const scrollToRef = (ref: any) => {
+    document.querySelector(".chat-message")!.scrollTo(0, ref.current.offsetTop);
+  };
+
   const sendMessage = (message: string) => {
     socketRef.current.emit("message", message);
   };
+
   const submit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -39,6 +46,7 @@ const App: React.FC = () => {
       setNewMessage("");
     }
   };
+
   return (
     <div className="container">
       <div className="chat-header">
@@ -47,14 +55,15 @@ const App: React.FC = () => {
       <div className="chat-main">
         <div className="chat-users">
           <h5>Connected Users</h5>
-          {users.map((user, index) => {
-            return <h6 key={index}>{user}</h6>;
-          })}
+          {users.map((user, index) => (
+            <h6 key={index}>{user}</h6>
+          ))}
         </div>
         <div className="chat-message">
           {messages.map((message, index) => {
             return <p key={index}>{message}</p>;
           })}
+          <div ref={scrollRef} />
         </div>
       </div>
       <div className="chat-input">
