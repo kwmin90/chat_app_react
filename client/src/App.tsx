@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const scrollRef = useRef(null);
 
   useEffect(() => {
+    console.log(URI);
     const username = prompt("Enter a username", "John Doe");
     socketRef.current = socketIOClient(URI);
 
