@@ -9,14 +9,11 @@ const App: React.FC = () => {
   const [messages, setMessages] = useState([""]);
   const [newMessage, setNewMessage] = useState("");
   const [users, setUsers] = useState([""]);
+  const [username, setUsername] = useState("");
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    console.log(URI);
-    const username = prompt("Enter a username", "John Doe");
     socketRef.current = socketIOClient(URI);
-
-    socketRef.current.emit("username", username);
 
     socketRef.current.on("allUsers", (allUsers: string[]) => {
       setUsers(allUsers);
@@ -47,6 +44,12 @@ const App: React.FC = () => {
       setNewMessage("");
     }
   };
+  const submitUsername = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      socketRef.current.emit("username", username);
+    }
+  };
 
   return (
     <div className="container">
@@ -66,6 +69,16 @@ const App: React.FC = () => {
           })}
           <div ref={scrollRef} />
         </div>
+      </div>
+      <div className="username-input">
+        <input
+          className="username"
+          type="text"
+          value={username}
+          placeholder="Type your Username and press Enter"
+          onChange={(e) => setUsername(e.target.value)}
+          onKeyDown={(e) => submitUsername(e)}
+        />
       </div>
       <div className="chat-input">
         <input
